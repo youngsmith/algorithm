@@ -1,3 +1,7 @@
+/*i used recursive function. it generates binary number that has a limited number of zero and one in ascending order. 
+if you want descending order, please change the code a little.*/
+
+
 #include <iostream>
 #include<vector>
 #include<string>
