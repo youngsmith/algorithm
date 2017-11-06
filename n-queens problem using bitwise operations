@@ -1,3 +1,6 @@
+/*i like to use bitwise operations, because it can shorten time for finding answers. in c++, there is a 'bitset' class. 
+if a range of number that the program processes is big enough, it might be better to use bitset class.*/
+
 #include<iostream>
 #include<string>
 
