@@ -1,3 +1,5 @@
+/*i usually use bitwise operations, because it takes shorter time to calculate.*/
+
 #include<iostream>
 #include<string>
 
