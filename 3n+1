@@ -1,0 +1,60 @@
+#include<iostream>
+#include<algorithm>
+#include <time.h>
+#include<Windows.h>
+
+using namespace std;
+unsigned int num1, num2;
+unsigned int cache[200000];
+
+int find(int num) {
+	if (num == 1) return 1;
+	if (num < num2 && cache[num] != -1) return cache[num];
+
+	int temp;
+	if (num & 1) temp = num + (num<<1) + 1;
+	else temp = (num>>1);
+
+	if (num < num2) return (cache[num] = find(temp) + 1);
+	else return find(temp) + 1;
+}
+
+int find2(int num) {
+	int count = 1;
+	while (num!=1) {
+		if (num & 1) num = num + (num<<1) + 1;
+		else num >>= 1;
+
+		count += 1;
+	}
+	return count;
+}
+
+
+int main(void) {
+	memset(cache, -1, sizeof(cache));
+
+	cin >> num1 >> num2;
+
+	DWORD begin, end;
+	begin = GetTickCount();    // 시간설정
+
+	/************************************************************************/
+
+	int max_length = -1;
+	for (int i = num1; i <= num2; i++)
+		//max_length = max(max_length, find(i));
+
+	for (int i = num1; i <= num2; i++)
+		max_length = max(max_length, find2(i));
+	/************************************************************************/
+
+
+	end = GetTickCount();         
+	cout << "수행시간 : " << (double)((end - begin) / (double)1000) << endl;
+
+
+	cout << max_length << endl;
+
+
+}
