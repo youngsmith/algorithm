@@ -1,0 +1,28 @@
+#include <iostream>
+#include<vector>
+#include<string>
+
+using namespace std;
+
+int n;
+int digit;
+int num_one;
+
+void find1(int num_one, int num_zero, int cur_digit, string s) {
+	if (cur_digit == digit) { cout << s << endl; return; }
+
+	if (num_zero > 0) {
+		find1(num_one, num_zero - 1, cur_digit + 1, s + "0");
+	}
+	if (num_one > 0) {
+		find1(num_one - 1, num_zero, cur_digit + 1, s + "1");
+	}
+	
+}
+
+int main(void) {
+	cin >> digit;     // a number of digit
+	cin >> num_one;
+
+	find1(num_one, digit-num_one, 0, "");
+}
