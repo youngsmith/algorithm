@@ -7,6 +7,7 @@ using namespace std;
 unsigned int num1, num2;
 unsigned int cache[200000];
 
+// this code use cache for efficiency
 int find(int num) {
 	if (num == 1) return 1;
 	if (num < num2 && cache[num] != -1) return cache[num];
@@ -19,6 +20,7 @@ int find(int num) {
 	else return find(temp) + 1;
 }
 
+// this code just calculates every number.
 int find2(int num) {
 	int count = 1;
 	while (num!=1) {
@@ -37,7 +39,7 @@ int main(void) {
 	cin >> num1 >> num2;
 
 	DWORD begin, end;
-	begin = GetTickCount();    // 시간설정
+	begin = GetTickCount();    // set timer
 
 	/************************************************************************/
 
@@ -51,7 +53,7 @@ int main(void) {
 
 
 	end = GetTickCount();         
-	cout << "수행시간 : " << (double)((end - begin) / (double)1000) << endl;
+	cout << "time : " << (double)((end - begin) / (double)1000) << endl;
 
 
 	cout << max_length << endl;
