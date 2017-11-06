@@ -1,0 +1,110 @@
+#include<iostream>
+#include<string>
+#include<queue>
+#include <utility>
+#include <bitset>
+
+using namespace std;
+char map[251][251];
+bitset<251 * 251> bit_map;
+
+int m, n;
+
+int dir[4][2] = { {1,0},{0,1},{0,-1},{-1,0} };
+
+
+void I_func() {
+	for(int i = 0; i < m; i++)
+		for (int j = 0; j < n; j++) {
+			map[i][j] = 'O';
+		}
+}
+
+void V_func(int x, int y1, int y2, char color) {
+	for (int i = y1 - 1; i < y2; i++)
+		map[i][x - 1] = color;
+}
+
+void H_func(int x1, int x2, int y, char color) {
+	for (int i = x1 - 1; i < x2; i++)
+		map[y - 1][i] = color;
+}
+
+void K_func(int x1, int y1, int x2, int y2, char color) {
+	for (int j = y1 - 1; j < y2; j++)
+		for (int i = x1 - 1; i < x2; i++)
+			map[j][i] = color;
+}
+
+void F_func(int x, int y, char color) {
+	queue<pair<int,int>> q;
+	bit_map.reset();
+
+	q.push(make_pair(y-1, x-1));
+
+	while (!q.empty()) {
+		pair<int, int> p = q.front();
+		q.pop();
+
+
+		for (int i = 0; i < 4; i++) {
+			int next_y = p.first + dir[i][0], next_x = p.second + dir[i][1];
+			
+			if (next_y < 0 || next_y >= m || next_x < 0 || next_x >= n)continue;
+			
+			if (bit_map[next_x + next_y * n] == false && map[next_y][next_x] == map[p.first][p.second]) {
+				bit_map[next_x + next_y * n] = true;
+				q.push(make_pair(next_y, next_x));
+			}
+		}
+
+		map[p.first][p.second] = color;
+
+	}
+}
+
+void S_func(string s) {
+	cout << s << endl;
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			cout << map[i][j];
+		}
+		cout << endl;
+	}
+}
+
+
+int main(void) {
+
+
+	string s;
+
+	while (1) {
+		getline(cin, s);
+
+		switch (s[0]) {
+			 
+		case 'I' :
+			m = s[4] - '0', n = s[2] - '0';
+			I_func();
+			break;
+		case 'C': I_func();
+			break;
+		case 'L' : map[s[4]-'0'-1][s[2]-'0'-1] = s[6];
+			break;
+		case 'V' : V_func(s[2] - '0', s[4] - '0', s[6] - '0', s[8]);
+			break;
+		case 'H' : H_func(s[2] - '0', s[4] - '0', s[6] - '0', s[8]);
+			break;
+		case 'K' : K_func(s[2] - '0', s[4] - '0', s[6] - '0', s[8] - '0', s[10]);
+			break;
+		case 'F' : F_func(s[2] - '0', s[4] - '0', s[6]);
+			break;
+		case 'S' : S_func(s.substr(2,s.size()-2));
+			break;
+		case 'X': return 0;
+			break;
+
+		}
+	}
+}
