@@ -1,0 +1,38 @@
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+
+int col = 0, se = 0, ne = 0;
+int n; // a size of chess board
+
+
+int find1(int _y, string s) {
+	if (_y == n) {      // if reach at this area, it means the program finds a answer.
+		cout << s << endl;
+		return 1;
+	}
+
+	int ret = 0;
+	int temp_col = col, temp_ne = ne, temp_se = se;
+	for (int i = 0; i < n; i++) {
+		if (!(col&(1<<i)) && !(ne&(1<<(_y+i))) && !(se&(1<<(_y-i+n-1)))) {	// when use bitwise operations, please don't forget to use '(' and ')' completely.
+			col |= (1 << i);                                                  // check if i can place a queen on the board by using bitwise operations.
+			ne |= (1 << (_y + i));                                            // this method can shorten time to calculate.
+			se |= (1 << (_y - i + n - 1));
+			ret += find1(_y+1, s + " " + to_string(i));
+			col = temp_col;                                                   // return current state to previous one.
+			ne = temp_ne;
+			se = temp_se;
+		}
+	}
+
+	return ret;                                                         
+}
+
+int main(void) {
+	cin >> n;
+	cout << find1(0, "") << endl; // 
+	cout << col << " " << ne << " " << se << endl;
+}
