@@ -1,0 +1,44 @@
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+string s;
+string s_encypted = "";
+
+int main(void) {
+	getline(cin,s);
+
+	int length = s.size();
+
+	cout << "encrypted sentence : ";
+	for (int i = 0; i < length; i++) {
+		if (s[i] >= 'A'  && s[i] <= 'Z') {
+			if (s[i] + 5 > 'Z') {
+				s_encypted += s[i] + 5 - 'Z' + 'A' - 1;
+				cout << s_encypted[i];
+			}
+			else {
+				s_encypted += s[i] + 5;
+				cout << s_encypted[i];
+			}
+		}
+		else {
+			s_encypted += s[i];
+			cout << s_encypted[i];
+		}
+	}
+
+	cout << endl;
+	cout << "decrypted sentence : ";
+	for (int i = 0; i < length; i++) {
+		if (s_encypted[i] >= 'A'  && s_encypted[i] <= 'Z') {
+			if (s_encypted[i] - 5 < 'A') {
+				cout << (char)(s_encypted[i] - 4 + 'Z' - 'A');
+			}
+			else cout << (char)(s_encypted[i] - 5);
+		}
+		else cout << (char)s_encypted[i];
+	}
+	
+}
