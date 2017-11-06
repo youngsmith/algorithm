@@ -1,0 +1,29 @@
+#include<iostream>
+#include<bitset>
+
+using namespace std;
+bitset<10000> b;
+short k;
+short temp;
+
+
+int main(void)
+{
+
+	for (int i = 1; i < 10000; i++) {
+		k = temp = i;
+		if (b[i] == false) {
+			while (k < 10000) {
+				temp = k;
+				while (temp) {
+					k += temp % 10;
+					temp /= 10;
+				}
+				if (k < 10000)
+					b[k] = true;
+			}
+			cout << i << endl;
+		}
+	}
+
+}
