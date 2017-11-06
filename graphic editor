@@ -1,3 +1,9 @@
+/*to make function 'F' is the point. 
+i used 'breadth first search', 
+but many other people used 'depth first search'. 
+i think both ways are good.*/
+
+
 #include<iostream>
 #include<string>
 #include<queue>
