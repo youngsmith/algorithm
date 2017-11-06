@@ -1,0 +1,38 @@
+#include<iostream>
+#include<string>
+
+using namespace std;
+int base_from, base_to;
+string num;
+
+// this program can convert up to hexadecimal. 
+int main(void) {
+	while (1) {
+		cin >> num >> base_from >> base_to;
+		
+		int num_base_10 = 0;
+		string s = "0123456789ABCDEF";
+		int length = num.size();
+		for (int i = 0; i < length; i++) {           // convert the number into decimal number according to its base, first
+			int digit = num[i];
+
+			if (digit >= '0' && digit <= '9') digit -= '0'; // convert char into int by subtracting (char)'0'
+			else digit = digit - 'A' + 10;
+
+			for (int j = length - i - 1; j > 0; j--)
+				digit *= base_from;                   
+
+			num_base_10 += digit;
+		}
+		
+
+		string num_base_to = "";
+
+		while (num_base_10) {                         // convert decimal number into another number system
+			num_base_to = s[num_base_10%base_to] + num_base_to;   
+			num_base_10 /= base_to;
+		}
+
+		cout << num_base_to << endl;
+	}
+}
