@@ -1,0 +1,108 @@
+/*in this code, the way to make recursive function is the point. 
+when make recursive function, it is important to make it simple, 
+because if function is complex, it is difficult for you to predict how it works.*/
+
+
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+typedef struct pos {
+	int _y;
+	int _x;
+};
+
+char** map;
+int n;
+string s;
+
+pos next_pos(int _y, int _x, int length, int order) {
+
+	switch (order) {
+		case 1: break;
+		case 2: _x += length;
+				break;
+		case 3: _y += length;
+				break;
+		case 4: _y += length;
+				_x += length;
+				break;
+	}
+
+	pos p = { _y, _x };
+	return p;
+}
+
+void draw_image(char color, int _y, int _x, int length) {
+	for (int i = _y; i < _y + length; i++)
+		for (int j = _x; j < _x + length; j++)
+			map[i][j] = color;
+}
+
+void decompress_image(int _y, int _x, int& cur, int length) {
+                                                        
+	if (s[cur] == 'x') {
+		int half_length = length / 2;
+		for (int i = 1; i <= 4; i++) {
+			pos next_p = next_pos(_y, _x, half_length, i);
+			cur++;
+			decompress_image(next_p._y, next_p._x, cur, half_length);
+		}
+	}
+	else {
+		draw_image(s[cur], _y, _x, length);
+	}
+}
+
+void show_image() {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++)
+			cout << map[i][j];
+		cout << endl;
+	}
+}
+
+string reverse_image(int& cur) {
+	if (s[cur] == 'x') {
+		string s[4];
+		for (int i = 0; i < 4; i++) {
+			cur++;
+			s[i] = reverse_image(cur);
+		}
+		return "x" + s[2] + s[3] + s[0] + s[1];
+	}
+	else {
+		string str;
+		str.push_back(s[cur]);
+		return str;
+	}
+}
+
+int main(void) {
+	cin >> n;
+	cin >> s;
+	int length = 1;
+	for (int i = 0; i < n; i++)
+		length *= 2;
+	n = length;
+
+	map = new char*[n];
+	for (int i = 0; i < n; i++)
+		map[i] = new char[n];
+
+
+	int cur = 0;
+	decompress_image(0, 0, cur, n);
+	show_image();
+	
+	cout << endl;
+
+	cur = 0;
+	string str = reverse_image(cur);
+	s = str;
+
+	cur = 0;
+	decompress_image(0, 0, cur, n);
+	show_image();
+}
