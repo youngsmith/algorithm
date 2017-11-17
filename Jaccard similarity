@@ -1,0 +1,61 @@
+#include<iostream>
+#include<string.h>
+#include<string>
+#include<bitset>
+
+#define MAX_LENGHTH_OF_STRING 1000
+
+/* this problem is presented in kakao's coding test. there is nothing special to tell.
+it is a typical implementation problem. */
+
+using namespace std;
+
+string s[2];
+string* set[2];
+
+int calculate_similarity(const int* size_of_set) {
+	bitset<MAX_LENGHTH_OF_STRING> bitmap;
+	bitmap.reset();
+	float count_intersection = 0;
+
+	for (int i = 0; i < size_of_set[0]; i++) {
+		for (int j = 0; j < size_of_set[1]; j++) {
+			if (bitmap[j] == true) continue;
+			if (set[0][i].compare(set[1][j]) == 0) {
+				count_intersection++;
+				bitmap[j] = true;
+			}
+		}
+	}
+
+	float count_union = (float)(size_of_set[0] + size_of_set[1]) - count_intersection;
+	
+	return 65536 * (count_intersection / count_union);
+
+}
+
+int make_set(int set_num, const string s) {
+	int size_of_set = 0;
+	for (int i = 0; i < s.size()-1; i++) {
+		char temp[2] = { s[i], s[i + 1] };
+		if (((temp[0] < 'A' || temp[0] > 'Z') && (temp[0] < 'a' || temp[0] > 'z')) || ((temp[1] < 'A' || temp[1] > 'Z') && (temp[1] < 'a' || temp[1] > 'z'))) continue;
+		if (temp[0] >= 'A' && temp[0] <= 'Z') temp[0] = temp[0] - 'A' + 'a';
+		if (temp[1] >= 'A' && temp[1] <= 'Z') temp[1] = temp[1] - 'A' + 'a';
+		set[set_num][size_of_set] += temp[0];
+		set[set_num][size_of_set++] += temp[1];
+	}
+	return size_of_set;
+}
+
+int main(void) {
+	getline(cin, s[0]);
+	getline(cin, s[1]);
+
+	set[0] = new string[s[0].size() - 1];
+	set[1] = new string[s[1].size() - 1];
+
+	int size_of_set[2] = { make_set(0,s[0]), make_set(1,s[1]) };
+
+	cout << calculate_similarity(size_of_set) << endl;
+	
+}
