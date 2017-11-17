@@ -1,0 +1,80 @@
+#include<iostream>
+
+/*in this code, i used bitmap because i like it. if input is less than 32(with x86) or 64(with x64) and you apply bitmap, 
+you can get considerable computational and spatial benefits. generally, bitwise operation is faster than other instructions. 
+if input is larger than 32 or 64, you can use bitset class. you can see the same benefits like using bitmap. it is easy for everyone to 
+use. */
+
+using namespace std;
+
+char** map;
+int row, col;
+
+void showmap() {
+	for (int i = 0; i < row; i++) {
+		for (int j = 0; j < col; j++) {
+			cout << map[i][j];
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
+
+int find1() {
+	int count = 0;
+	int* map_check = new int[row];
+	for (int i = 0; i < row; i++)
+		map_check[i] = 0;
+
+	for (int i = 0; i < row - 1; i++) {
+		for (int j = 0; j < col - 1; j++) {
+			char temp = map[i][j];
+			if (temp == 'X' || temp != map[i + 1][j] || temp != map[i][j + 1] || temp != map[i + 1][j + 1]) continue;
+			map_check[i] |= (3 << j);
+			map_check[i + 1] |= (3 << j);
+		}
+	}
+
+	for (int i = 0; i < row; i++) {
+		for (int j = 0; j < col; j++) {
+			if ((map_check[i] & (1 << j)) != 0) {
+				map[i][j] = 'X';
+				count++;
+			}
+		}
+	}
+
+	for (int i = 0; i < col; i++) {
+		for (int j = row - 2; j >= 0; j--) {
+			int temp = j;
+			if (map[temp][i] == 'X' || map[temp + 1][i] != 'X') continue;
+			while (++temp < row && map[temp][i] == 'X');
+			map[temp - 1][i] = map[j][i];
+			map[j][i] = 'X';
+		}
+	}
+	return count;
+}
+
+
+int main() {
+
+	cin >> row >> col;
+
+	map = new char*[row];
+	for (int i = 0; i < row; i++)
+		map[i] = new char[col];
+
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < col; j++)
+			cin >> map[i][j];
+	
+	int temp, total = 0;
+	do {
+		temp = find1();
+		total += temp;
+	} while (temp != 0);
+
+	cout << total << endl;
+
+}
