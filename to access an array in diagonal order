@@ -1,0 +1,68 @@
+#include <iostream>
+
+/* there are two ways of accessing an array in diagonal order. so i tried both ways. as far as i know, to access an array 
+randomly demands that computer should calculate addresses that are needed to access an array. however, to access in diagonal 
+order is needed sometimes. in this code, the way how to calculate addresses is the point. */
+
+int n;
+int** map;
+
+using namespace std;
+
+
+void showmap() {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cout << map[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
+
+
+int main(void) {
+
+	cin >> n;
+
+	map = new int*[n];
+	for (int i = 0; i < n; i++)
+		map[i] = new int[n];
+
+
+  // first way
+	int temp = 1;
+	int start = -(n - 1), end = 2 * n - 1 - (n - 1);
+
+	for (int i = start; i < end; i++) {
+		bool find = false;
+		for (int j = 0; j < n; j++) {
+			if (i + j < 0 || i + j >= n) {
+				if (find) break;
+				continue;
+			}
+			map[j+i][j] = temp++;
+			find = true;
+		}
+	}
+
+	showmap();
+
+  // second way
+	temp = 1;
+	for (int i = 0; i < 2 * n - 1; i++) {
+		bool find = false;
+		for (int j = 0; j < 6; j++) {
+			if (i - j < 0 || i - j >= n) {
+				if (find) break;
+				continue;
+			}
+			map[i - j][j] = temp++;
+			find = true;
+		}
+	}
+
+	showmap();
+
+
+}
