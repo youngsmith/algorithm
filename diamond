@@ -1,0 +1,111 @@
+#include<iostream>
+#include<vector>
+
+/* this problem is presented in topcit coding test. this problem requrires a considerable ability to handle a 2d-array. */
+
+int map[6][6];
+int _add[11][2];
+int _add_check[11];
+
+int num_of_cross = 2 * 6 - 1;
+using namespace std;
+
+void showmap() {
+	for (int i = 0; i < 6; i++) {
+		for (int j = 0; j < 6; j++) {
+			cout << map[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
+
+bool find2(int current_row, vector<int>& state, int current_idx) {
+
+	if (current_idx == -1) return false;
+	
+	int diff = state[current_idx];
+
+	int row = (current_row + diff) >> 1, col = current_row - row;
+
+	int new_row = row - 1, new_col = col + 1;
+	if (new_row >= 0 && new_row < 6 && new_col >= 0 && new_col < 6 && map[new_row][new_col] != 1) {
+		map[row][col] = 0;
+		map[new_row][new_col] = 1;
+		state[current_idx] -= 2;
+		return true;
+	}
+	else {
+		if (find2(current_row, state, current_idx - 1)) {
+			map[row][col] = 0;
+			diff = state[current_idx] = state[current_idx - 1] - 2;
+			row = (current_row + diff) >> 1, col = current_row - row;
+			map[row][col] = 1;
+			return true;
+		}
+		else return false;
+	}
+
+}
+
+bool find1(int current_row) {
+
+	if (current_row == num_of_cross) return true;
+
+	//int end_idx = 6 - abs((6 - 1) - current_row);
+
+	int temp_num_of_one = _add[current_row][0];
+	
+	vector<int> state;
+	int row, col;
+	if (current_row >= 6) col = current_row - 6 + 1;
+	else col = 0;
+
+
+	row = current_row - col;
+
+	int temp_absolute_pos = row - col;
+	for (int i = 0; i < temp_num_of_one; i++) {
+		state.push_back(temp_absolute_pos);
+		map[row][col] = 1;
+		row--, col++;
+		temp_absolute_pos -= 2;
+	}
+	int state_size = state.size() - 1;
+
+	do{
+		bool promising = true;
+		
+		for (int i = 0; i < state_size; i++) _add_check[state[i] + (6 - 1)] += 1;
+
+		for (int i = temp_absolute_pos + (6 - 1) ; i >= -temp_absolute_pos + (6 - 1); i-=2)
+			if (_add_check[i] > _add[i][1]) {
+				promising = false;
+				break;
+			}
+		if (!promising) {
+			for (int i = 0; i < state_size; i++) _add_check[state[i] + (6 - 1)] -= 1;
+			continue;
+		}
+		if (find1(current_row + 1)) return true;
+	} while (find2(current_row, state, state_size));
+
+	return false;
+}
+
+int main(void) {
+	for (int i = 0; i < 6; i++)
+		for (int j = 0; j < 6; j++)
+			map[i][j] = 0;
+
+	for (int i = 0; i < num_of_cross; i++)
+		cin >> _add[i][0];
+	for (int i = 0; i < num_of_cross; i++)
+		cin >> _add[i][1];
+
+
+
+	if(find1(0)) showmap();
+	else cout << "can not find a solution!" << endl;
+	
+}
