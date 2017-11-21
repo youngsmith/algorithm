@@ -1,0 +1,99 @@
+#include<iostream>
+#include<vector>
+#include<queue>
+#define MAX 987654321
+
+/* this program finds the shortest path that must go from vertex(0) to vertex(n-1) through specific two vertex. 
+i think this problem is very important, because this situation occurs usually. i solved it using dijkstra, but 
+floyd is also good. */
+
+int V, E;
+int source[3];
+int* dist[3];
+
+using namespace std;
+
+vector<pair<int, int>>* edge_cost;
+
+void showmap() {
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < V; j++) {
+			cout << dist[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
+
+int min(int a, int b) {
+	return (a > b ? b : a);
+}
+
+void find1(int source, int dist_idx) {
+	
+	priority_queue<pair<int, int>> pq;
+	dist[dist_idx][source] = 0;
+	pq.push(make_pair(0, source));
+
+	while (!pq.empty()) {
+		pair<int, int> p = pq.top();
+		pq.pop();								// 실수
+
+		int cost = -p.first;
+		int here = p.second;
+
+		if (cost > dist[dist_idx][here]) continue;		// 실수
+
+		int tmp_end_idx = edge_cost[here].size();
+		int there, new_cost;
+		for (int i = 0; i < tmp_end_idx; i++) {
+			new_cost = cost + edge_cost[here][i].second;	// 실수
+			there = edge_cost[here][i].first;
+			if (new_cost > dist[dist_idx][there]) continue; // 실수
+			dist[dist_idx][there] = new_cost;				// 실수
+			pq.push(make_pair(-new_cost, there));
+		}
+	}
+}
+
+
+int main(void) {
+
+
+	cin >> V >> E;
+
+	for (int i = 0; i < 3; i++)
+		dist[i] = new int[V];
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < V; j++) {
+			dist[i][j] = MAX;
+		}
+	}
+
+	edge_cost = new vector<pair<int, int>>[V];
+	int temp[3];
+	for (int i = 0; i < E; i++) {
+		cin >> temp[0] >> temp[1] >> temp[2];
+		edge_cost[temp[0] - 1].push_back(make_pair(temp[1] - 1, temp[2]));
+	}
+
+	cin >> source[1] >> source[2];
+	source[0] = 0;
+	source[1]--, source[2] --;
+	
+	for (int i = 0; i < 3; i++)
+		find1(source[i], i);
+
+
+	int min_cost = MAX;
+	for (int i = 1; i < 3; i++) {
+		if(dist[0][source[i]] == MAX || dist[i][source[3 - i]] == MAX || dist[3 - i][V - 1] == MAX) continue;
+		//cout << dist[0][source[i]] << "," << dist[i][source[3 - i]] << "," << dist[3 - i][V - 1] << endl;
+		min_cost = min(min_cost, dist[0][source[i]] + dist[i][source[3 - i]] + dist[3 - i][V - 1]);
+	}
+	
+	if (min_cost == MAX) cout << -1 << endl;
+	else cout << min_cost << endl;
+
+	//showmap();
+}
