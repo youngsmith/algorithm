@@ -1,0 +1,74 @@
+#include<iostream>
+#include<string>
+#include<string.h>
+#define MOD 1000000
+
+
+/* i don't know what a difference is between two functions. :( if you know, please, let me know it. 
+http://www.spoj.com/problems/ACODE/
+*/
+
+using namespace std;
+
+string s;
+int s_length;
+int cache[5002];
+int cache1[5002];
+
+
+
+
+int solve(int pos) {
+	if (s[pos] == '0') return 0; 
+	if (pos == s.size()) return 1;
+	int &ret = cache[pos];
+	if (ret != -1) return ret;
+	ret = 0;
+	ret += solve(pos + 1);
+	ret %= MOD;
+	if (pos + 1 <= s.size() - 1) {
+		int val = (s[pos + 1] - '0') * 10 + (s[pos + 2] - '0');
+		if (val <= 26) {
+			ret += solve(pos + 2);
+			ret %= MOD;
+		}
+	}
+	return ret;
+}
+
+int find1(int pos) {
+	if (s[pos + 1] == '0') return 0;
+	if (pos == s_length - 1) return 1;
+
+	int &ret = cache1[pos];
+	if (ret != -1) return ret;
+	ret = 0;
+	
+	ret += find1(pos + 1);
+	ret %= MOD;
+
+	if (pos + 2 < s_length) {
+		int val = (s[pos + 1] - '0') * 10 + (s[pos + 2] - '0');
+		if (val <= 26) {
+			ret += find1(pos + 2);
+			ret %= MOD;
+		}
+	}
+	return ret;
+}
+
+int main() {
+
+	while (true) {
+		memset(cache, -1, sizeof(cache));
+		memset(cache1, -1, sizeof(cache1));
+		cin >> s;
+		if (s[0] == '0') break;
+
+		s_length = s.size();
+
+		cout << find1(-1) << endl;
+		cout << solve(0) << endl;
+
+	}
+}
