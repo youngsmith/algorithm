@@ -1,0 +1,95 @@
+#include<iostream>
+#include<queue>
+#include<vector>
+#define MAX 987654321
+using namespace std;
+
+// important point : if you use dp, the promising candidates can be removed at some point.
+// therefore, if a problem is related to searching a route, please, use Floyd or Dijkstra or Breadth First Search.
+// https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=2436
+
+int n;
+int** map;
+bool** map_check;
+int** cache;
+int dir[4][2] = { {1,0},{0,1},{-1,0},{0,-1} };
+int** dist;
+
+int min(int a, int b) {
+	return (a < b ? a : b);
+}
+
+int find1(int cur_row, int cur_col) {
+	if (cur_row == n - 1 && cur_col == n - 1) return map[n-1][n-1];
+
+	int& ret = cache[cur_row][cur_col];
+	if (ret != MAX) return ret;
+
+
+	for (int i = 0; i < 4; i++) {
+		int next_row = cur_row + dir[i][0], next_col = cur_col + dir[i][1];
+		if (next_row < 0 || next_row >= n || next_col < 0 || next_col >= n || map_check[next_row][next_col] == true)continue;
+		map_check[next_row][next_col] = true;
+		ret = min(ret, find1(next_row, next_col) + map[cur_row][cur_col]);
+		map_check[next_row][next_col] = false;
+	}	
+
+	return ret;
+
+}
+
+
+
+int main(void) {
+	cin >> n;
+
+	map = new int*[n];
+	dist = new int*[n];
+	//map_check = new bool*[n];
+	//cache = new int*[n];
+	for (int i = 0; i < n; i++) {
+		map[i] = new int[n];
+		//map_check[i] = new bool[n];
+		//cache[i] = new int[n];
+		dist[i] = new int[n];
+	}
+
+	for (int i = 0; i < n; i++)
+		for(int j = 0; j < n; j++)
+			dist[i][j] = MAX;
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) {
+			cin >> map[i][j];
+			//map_check[i][j] = false;
+			//cache[i][j] = MAX;
+		}
+	
+	//map_check[0][0] = true;
+	//cout << find1(0,0) << endl;
+
+	priority_queue<pair<int, int>> pq;
+	dist[0][0] = map[0][0];
+	pq.push({ -map[0][0],0 });
+	while (!pq.empty()) {
+		int cost = -pq.top().first;
+		int here_v = pq.top().second;
+		int _y = here_v / n, _x = here_v % n;
+		
+		pq.pop();
+		
+		if (dist[_y][_x] < cost) continue;
+
+		for (int i = 0; i < 4; i++) {
+			int new_y = _y + dir[i][0], new_x = _x + dir[i][1];
+			if (new_y < 0 || new_y >= n || new_x < 0 || new_x >= n) continue;
+			int new_cost = cost + map[new_y][new_x];
+			if (new_cost > dist[new_y][new_x]) continue;
+			dist[new_y][new_x] = new_cost;
+			pq.push({ -new_cost, new_y*n + new_x });
+		}
+	}
+
+	cout << dist[n - 1][n - 1] << endl;
+	
+}
