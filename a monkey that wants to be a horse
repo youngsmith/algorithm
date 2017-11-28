@@ -1,0 +1,75 @@
+#include<iostream>
+#include <queue>
+#include <algorithm>
+
+/* this problem is related to bfs, but i can not only go to  adjacent cell but also jump to other cells.
+therefore, unlike other bfs problem, we need 3d visited array not to push the same status that i pushed 
+into the queue before. 
+https://www.acmicpc.net/problem/1600 */
+
+using namespace std;
+
+int k, w, h;
+int map[201][201];
+bool visited[201][201][31] = { false };
+int dx[] = { 1,-1,0,0 };
+int dy[] = { 0,0,1,-1 };
+int kdx[] = { 2,2,-2,-2,1,1,-1,-1 };
+int kdy[] = { 1,-1,1,-1,2,-2,2,-2 };
+
+typedef struct pos {
+	int y;
+	int x;
+	int k;
+	int cnt;
+	pos(int a, int b, int c, int d) {
+		y = a, x = b, k = c, cnt = d;
+	}
+}pos;
+
+int bfs() {
+	queue<pos> q;
+	q.push(pos(0, 0, k, 0));
+
+	while (!q.empty()) {
+		pos cur = q.front();
+		q.pop();
+
+		for (int i = 0; i < 4; i++) {
+			int ny = cur.y + dy[i];
+			int nx = cur.x + dx[i];
+			if (ny < 0 || ny >= h || nx < 0 || nx >= w || visited[ny][nx][cur.k] || map[ny][nx]) continue;
+			if (nx == w - 1 && ny == h - 1) return cur.cnt + 1;
+			visited[ny][nx][cur.k] = true;
+			q.push(pos(ny, nx, cur.k, cur.cnt + 1));
+		}
+
+		if (cur.k == 0) continue;
+
+		for (int i = 0; i < 8; i++) {
+			int ny = cur.y + kdy[i];
+			int nx = cur.x + kdx[i];
+			if (ny < 0 || ny >= h || nx < 0 || nx >= w || visited[ny][nx][cur.k - 1] || map[ny][nx]) continue;
+			if (nx == w - 1 && ny == h - 1) return cur.cnt + 1;
+			visited[ny][nx][cur.k - 1] = true;
+			q.push(pos(ny, nx, cur.k - 1, cur.cnt + 1));
+		}
+	}
+
+	return -1;
+}
+
+
+int main() {
+
+	while (1) {
+		cin >> k >> w >> h;
+
+		for (int i = 0; i < h; i++)
+			for (int j = 0; j < w; j++)
+				cin >> map[i][j];
+
+		cout << bfs() << endl;
+	}
+	return 0;
+}
