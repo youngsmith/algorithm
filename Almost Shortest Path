@@ -1,0 +1,110 @@
+/* https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=2211 
+in this problem, the way how to find a route between the shortest path is a point. 
+if you find a vertex that satisfy dist[i] = dist[j] + adj[j][i], i-j is a route between the shortest path. */
+
+
+#include<iostream>
+#include<vector>
+#include<queue>
+#define MAX 9876543
+using namespace std;
+
+
+int** adj;
+int* dist;
+int v, e, s, d;
+
+void showmap() {
+	for (int i = 0; i < v; i++) {
+		for (int j = 0; j < v; j++) {
+			cout << adj[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
+
+int main(void) {
+	cin >> v >> e >> s >> d;
+
+	adj = new int*[v];
+	for (int i = 0; i < v; i++) {
+		adj[i] = new int[v];
+		for (int j = 0; j < v; j++)
+			adj[i][j] = 0;
+	}
+
+	dist = new int[v];
+	for (int i = 0; i < v; i++)
+		dist[i] = MAX;
+
+	int temp[3];
+	for (int i = 0; i < e; i++) {
+		cin >> temp[0] >> temp[1] >> temp[2];
+		adj[temp[0]][temp[1]] = temp[2];
+	}
+
+	priority_queue<pair<int, int>> pq;
+	dist[s] = 0;
+	pq.push({ 0,s });
+
+	while (!pq.empty()) {
+		pair<int, int> p = pq.top();
+		pq.pop();
+		int cost = -p.first;
+		int here = p.second;
+
+		if (cost > dist[here]) continue;
+
+		for (int i = 0; i < v; i++) {
+			if (!adj[here][i]) continue;
+			int there = i;
+			int new_cost = cost + adj[here][there];
+			if (new_cost >= dist[there])continue;
+			dist[there] = new_cost;
+			pq.push({ -new_cost,there });
+		}
+	}
+
+	queue<int> q;
+	q.push(d);
+	while (!q.empty()) {
+		int destiny = q.front(), temp;
+		q.pop();
+		for (int i = 0; i < v; i++) {
+			if ((temp = adj[i][destiny]) != 0 && dist[destiny] == dist[i] + temp) {
+				adj[i][destiny] = 0;
+				q.push(i);
+			}
+		}
+		if (dist[destiny] == adj[s][destiny]) adj[s][destiny] = 0;
+	}
+
+
+	for (int i = 0; i < v; i++)
+		dist[i] = MAX;
+	dist[s] = 0;
+	pq.push({ 0,s });
+
+	while (!pq.empty()) {
+		pair<int, int> p = pq.top();
+		pq.pop();
+		int cost = -p.first;
+		int here = p.second;
+
+		if (cost > dist[here]) continue;
+
+		for (int i = 0; i < v; i++) {
+			if (!adj[here][i]) continue;
+			int there = i;
+			int new_cost = cost + adj[here][there];
+			if (new_cost >= dist[there])continue;
+			dist[there] = new_cost;
+			pq.push({ -new_cost,there });
+		}
+	}
+
+	if (dist[d] >= MAX)
+		cout << -1 << endl;
+	else
+		cout << dist[d] << endl;
+}
