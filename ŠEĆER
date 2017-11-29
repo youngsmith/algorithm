@@ -1,0 +1,24 @@
+
+
+/* http://hsin.hr/coci/archive/2010_2011/        Contest #7 
+https://www.acmicpc.net/problem/2839
+i used greedy approach. */
+
+#include<iostream>
+using namespace std;
+int n;
+
+int main(void) {
+	cin >> n;
+
+
+	for (int i = n / 5; i >= 0; i--) {
+		if ((n - i * 5) % 3 == 0) {
+			cout << i + (n - i * 5) / 3 << endl;
+			return 0;
+		}
+	}
+
+	cout << -1 << endl;
+	return 0;
+}
