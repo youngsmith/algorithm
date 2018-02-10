@@ -1,3 +1,6 @@
+/* this kind of problem is very famous. there are some questions set at olympiad.
+to be aware that stack always is kept in order is a point. */ 
+
 #include <iostream>
 #include <vector>
 #include <stack>
@@ -17,7 +20,7 @@ int main(void) {
 		
 		int temp = 1;
 
-		while (!stk.empty() && stk.back() <= a) {	// 이러한 작업을 했을 때, 스택 내부는 항상 내림차순으로 유지된다는 확신이 부족했음.
+		while (!stk.empty() && stk.back() <= a) {	
 			cnt += stk2.back();
 			if (stk.back() == a) temp += stk2.back();
 			stk.pop_back();
@@ -25,14 +28,13 @@ int main(void) {
 		}
 		
 
-		/*int idx;idx = stk.size() - 1;					// 시간 초과의 주요 원인
+		/*int idx;idx = stk.size() - 1;			
 		while (idx >= 0 && stk[idx] == a) {
 			cnt++, idx--;
 		}
 		if (idx >= 0) cnt++;
 		*/
 
-		// 비었거나, 탑보다 작거나. -> 내가 처리해주고 싶은 경우 : 후자만.
 		if (!stk.empty()) cnt+=1;
 
 		stk.push_back(a);
