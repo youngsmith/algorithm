@@ -1,0 +1,60 @@
+/* https://www.acmicpc.net/problem/6988 */
+
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+int n;
+int arr[3003];
+bool check[3002][3002];
+long long max_score = -1;
+int numHash[1000001];
+int diff;
+
+void find1(int cur_idx, int prev_idx, int picked, long long total) {
+	int temp = arr[cur_idx] + diff, next_idx;
+	if (temp < 1000001 && (next_idx=numHash[temp]) != -1) {
+		if (!check[prev_idx][next_idx]) {
+			check[prev_idx][next_idx] = true;
+			find1(next_idx, cur_idx, picked + 1, total + arr[next_idx]);
+		}
+	}
+	else if (picked >= 3) {
+		if (max_score < total) max_score = total;
+		return;
+	}
+}
+
+
+int main(void) {
+
+	cin >> n;
+
+	for (int i = 0; i < 1000001; i++)
+		numHash[i] = -1;
+
+
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+		numHash[arr[i]] = i;	//  in O(1), we can check whether specific value exists.
+	}							
+
+	for (int i = 0; i < 3002; i++)
+		for (int j = 0; j < 3002; j++)
+			check[i][j] = false;
+		
+
+	for (int start = 0; start < n; start++) {
+		int limit = ((arr[n - 1] - arr[start]) >> 1) + ((((arr[n - 1] - arr[start]) & 1) == 1) ? 1 : 0);
+		for (int next = start + 1; next < n; next++) {
+			diff = arr[next] - arr[start];
+			if (diff > limit) break;
+			check[start][next] = true;
+			find1(next, start, 2, arr[start] + arr[next]);
+		}
+	}
+
+	if(max_score != -1)	cout << max_score << endl;
+	else cout << 0 << endl;
+}
