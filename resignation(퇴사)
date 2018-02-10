@@ -1,0 +1,60 @@
+/* https://www.acmicpc.net/problem/14501 */
+
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <vector>
+#include <string>
+#include <string.h>
+#include <queue>
+#include <stack>
+
+#define	ARRAY_SIZE(x)	( sizeof((x))/sizeof((x)[0]) ) 
+#define	ABS(x)			( ((x)<0)?-(x):(x) )	
+#define	SQUARE(x)		( (x)*(x) )	
+#define	MAX(x,y)		( (x) > (y) ? (x) : (y) )	
+#define	MIN(x,y)		( (x) < (y) ? (x) : (y) )	
+#define	UPCASE(c)		( ( (c)>='a' && (c)<='z') ? (c)-('a'-'A') : (c) )	
+#define LOWCASE(c)		( ( (c)>='A' && (c)<='Z') ? (c)+('a'-'A') : (c) )
+#define LOOP(x,s,e)		for(int x = s; x < e; ++x) 
+#define LOOP_(x,s,e)		for(int x = s; x >= e; --x) 
+#define LOOP_EQ(x,s,e)		for(int x = s; x <= e; ++x) 
+#define LL long long
+#define ULL unsigned long long
+
+
+using namespace std;
+int n;
+int info[20][2];	// 0 : 걸리는 시간, 1 : 버는 돈
+
+int string_to_num(string t) {
+	int ret = 0;
+	for (int i = 0; i < t.size(); i++) {
+		ret *= 10;
+		ret += t[i] - '0';
+	}
+	return ret;
+}
+
+int find1(int cur_day) {
+	if (cur_day == n + 1) return 0;
+	if (cur_day > n + 1) return -987654321;
+
+	int ret = -987654321;
+
+	ret = max(ret, find1(cur_day + info[cur_day][0]) + info[cur_day][1]);
+
+	ret = max(ret, find1(cur_day + 1));
+
+	return ret;
+}
+
+int main()
+{
+	cin >> n;
+	LOOP_EQ(i, 1, n) {
+		cin >> info[i][0] >> info[i][1];
+	}
+
+	cout << find1(1) << endl;
+}
