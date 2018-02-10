@@ -1,0 +1,114 @@
+/* https://www.acmicpc.net/problem/14502
+these days, i usully use macro functions, instead of typing entire for loop. it reduces some stress. 
+i need not to care about details, so that it reduces chances of making mistakes. 
+this problem requires two thing, dfs and bfs. i think this is a good problem for testing basic knowledges of algorithm. */
+
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <vector>
+#include <string>
+#include <string.h>
+#include <queue>
+#include <stack>
+
+#define	ARRAY_SIZE(x)	( sizeof((x))/sizeof((x)[0]) ) 
+#define	ABS(x)			( ((x)<0)?-(x):(x) )	
+#define	SQUARE(x)		( (x)*(x) )	
+#define	MAX(x,y)		( (x) > (y) ? (x) : (y) )	
+#define	MIN(x,y)		( (x) < (y) ? (x) : (y) )	
+#define	UPCASE(c)		( ( (c)>='a' && (c)<='z') ? (c)-('a'-'A') : (c) )	
+#define LOWCASE(c)		( ( (c)>='A' && (c)<='Z') ? (c)+('a'-'A') : (c) )
+#define LOOP(x,s,e)		for(int x = s; x < e; ++x) 
+#define LOOP_(x,s,e)		for(int x = s; x >= e; --x) 
+#define LOOP_EQ(x,s,e)		for(int x = s; x <= e; ++x) 
+#define LL long long
+#define ULL unsigned long long
+
+
+using namespace std;
+
+short n = 3, m;
+short map[10][10];
+int dy[4] = { 1,0,-1,0 };
+int dx[4] = { 0,1,0,-1 };
+int num_of_1 = 0, num_of_2 = 0;
+int total_cell_num;
+
+int string_to_num(string t) {
+	int ret = 0;
+	for (int i = 0; i < t.size(); i++) {
+		ret *= 10;
+		ret += t[i] - '0';
+	}
+	return ret;
+}
+
+int spread_virus() {
+	// copy map
+	short map_copied[10][10];
+	LOOP(i, 0, n) {
+		LOOP(j, 0, m) {
+			map_copied[i][j] = map[i][j];
+		}
+	}
+
+	LOOP(i, 0, n) {
+		LOOP(j, 0, m) {
+			if (map_copied[i][j] == 2) {
+				queue<pair<int, int>> q;
+				q.push({ i,j });
+				while(!q.empty()) {
+					int r = q.front().first, c = q.front().second;
+					q.pop();
+					LOOP(k, 0, 4) {
+						int nr = r + dy[k], nc = c + dx[k];
+						if (nr < 0 || nr >= n || nc < 0 || nc >= m || map_copied[nr][nc] != 0) continue;
+						map_copied[nr][nc] = 2;
+						q.push({ nr,nc });
+					}
+				}
+			}
+		}
+	}
+
+	int secure_area = 0;
+	LOOP(i, 0, n) {
+		LOOP(j, 0, m) {
+			if (map_copied[i][j] == 0) secure_area += 1;
+		}
+	}
+
+	return secure_area;
+}
+
+int find1(int cur_cell, int picked) {
+	if (picked == 3) return spread_virus();
+
+	int ret = -987654321;
+
+	LOOP(i, cur_cell + 1, total_cell_num) {
+		int y = i / m, x = i % m;
+		if (map[y][x] != 0) continue;
+		map[y][x] = 1;
+		ret = max(ret, find1(i, picked + 1));
+		map[y][x] = 0;
+	}
+
+	return ret;
+}
+
+int main()
+{
+	cin >> n >> m;
+	total_cell_num = m*n;
+
+	LOOP(i, 0, n) {
+		LOOP(j, 0, m) {
+			cin >> map[i][j];
+		}
+	}
+	
+	cout << find1(-1, 0) << endl;
+
+}
