@@ -1,0 +1,123 @@
+/* https://www.acmicpc.net/problem/3190
+this problem is similar to 'escape maze 2'. how to think simple is a point. */
+
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <vector>
+#include <string>
+#include <string.h>
+#include <queue>
+#include <stack>
+
+#define	ARRAY_SIZE(x)	( sizeof((x))/sizeof((x)[0]) ) 
+#define	ABS(x)			( ((x)<0)?-(x):(x) )	
+#define	SQUARE(x)		( (x)*(x) )	
+#define	MAX(x,y)		( (x) > (y) ? (x) : (y) )	
+#define	MIN(x,y)		( (x) < (y) ? (x) : (y) )	
+#define	UPCASE(c)		( ( (c)>='a' && (c)<='z') ? (c)-('a'-'A') : (c) )	
+#define LOWCASE(c)		( ( (c)>='A' && (c)<='Z') ? (c)+('a'-'A') : (c) )
+#define LOOP(x,s,e)		for(int x = s; x < e; ++x) 
+#define LOOP_(x,s,e)		for(int x = s; x >= e; --x) 
+#define LOOP_EQ(x,s,e)		for(int x = s; x <= e; ++x) 
+#define LL long long
+#define ULL unsigned long long
+
+
+using namespace std;
+
+int dx[4] = { 1,0,-1,0 };
+int dy[4] = { 0,-1,0,1 };
+int n;
+char map[105][105];
+pair<int, int> operation[105];
+
+int string_to_num(string t) {
+	int ret = 0;
+	for (int i = 0; i < t.size(); i++) {
+		ret *= 10;
+		ret += t[i] - '0';
+	}
+	return ret;
+}
+
+void find1() {
+	LOOP(i, 0, n) {
+		LOOP(j, 0, n) {
+			cout << map[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
+
+int main()
+{
+	LOOP(i, 0, 105) {
+		LOOP(j, 0, 105) {
+			map[i][j] = '.';
+		}
+	}
+	cin >> n;
+	int num_of_apple;
+	cin >> num_of_apple;
+	LOOP(i, 0, num_of_apple) {
+		int y, x;
+		cin >> y >> x;
+		map[y - 1][x - 1] = 'x';
+	}
+
+	int num_of_direction;
+	cin >> num_of_direction;
+	LOOP(i, 0, num_of_direction) {
+		int t;
+		char dir;
+		cin >> t >> dir;
+		if(dir == 'L') operation[i] = { t, 1 };
+		else operation[i] = { t, -1 };
+	}
+	operation[num_of_direction] = { 9999999, 0 };
+
+	int time = 0;
+	queue< pair<int, int> > q;
+	pair<int, int> head, tail;
+	head = tail = { 0,0 };
+	map[0][0] = 'o';
+	int cur_dir_of_head = 0, cur_dir_of_tail = 0, cur_op = 0;
+
+	while (1) {
+		while(time < operation[cur_op].first){
+			time++;
+			head.first += dy[cur_dir_of_head], head.second += dx[cur_dir_of_head];
+			if (head.first >= 0 && head.first < n && head.second >= 0 && head.second < n && map[head.first][head.second] != 'o') {
+				if (map[head.first][head.second] != 'x') {
+					map[tail.first][tail.second] = '.';
+					if (!q.empty()) {
+						pair<int, int> p = q.front();
+						int tail_dy, tail_dx;
+						if ((tail_dy = p.first - tail.first)) tail_dy /= ABS(tail_dy);
+						if ((tail_dx = p.second - tail.second)) tail_dx /= ABS(tail_dx);
+						tail.first += tail_dy, tail.second += tail_dx;
+						if (tail.first == p.first && tail.second == p.second) q.pop();
+					}
+					else {
+						tail.first += dy[cur_dir_of_head], tail.second += dx[cur_dir_of_head];
+					}
+				}
+			}
+			else {
+				cout << time << endl;
+				return 0;
+			}
+			map[head.first][head.second] = 'o';
+		}
+		//find1();
+		cur_dir_of_head += operation[cur_op].second;
+		if (cur_dir_of_head < 0) cur_dir_of_head = 3;
+		else cur_dir_of_head %= 4;
+
+		if(head != tail) q.push(head);
+		cur_op++;
+	}
+	return 0;
+}
