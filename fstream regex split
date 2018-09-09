@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <Regex>
+
+using namespace std;
+
+vector<string> split(string str, char delimiter) {
+	vector<string> internal;
+	stringstream ss(str);
+	string temp;
+
+	while (getline(ss, temp, delimiter)) {
+		internal.push_back(temp);
+	}
+
+	return internal;
+}
+
+int main(int argc, char **argv) {
+	string line = "Thank you for visiting my Blog.";
+	vector<string> line_vector = split(line, ' ');
+
+	for (int i = 0; i < line_vector.size(); ++i)
+		cout << line_vector[i] << endl;
+
+
+
+
+	// 간단히 공백 탭 뉴라인으로 나눌 때...
+	string line2 = "123		456", temp = "";
+	stringstream ss(line2);
+	vector<string> v;
+	while (ss >> temp) v.push_back(temp);
+
+	string ip[100], ipmi[100], id[100];
+	ss >> ip[0];
+	ss >> ipmi[0];
+	ss >> id[0];
+
+
+
+	// fstream 사용법
+	ofstream of("t.txt");
+	if (of.is_open()) {
+		of << "first line" << endl;
+		of << "second line" << endl;
+		of.close();
+	}
+	
+	ifstream is("t.txt");
+	if (is.is_open()) {
+		// while(!is.eof()) { is >> temp; }
+		while (getline(is, temp)) {
+			cout << temp;
+		}
+		is.close();
+	}
+
+
+	cout << endl;
+
+	//정규식 사용법
+	regex reg("(10|[0-9])[DST][*#]?");
+	smatch m;
+	string s = "10D*2T#3S";
+	
+	while (regex_search(s, m, reg))
+	{
+		cout << m[0] << endl;
+		s = m.suffix();
+	}
+  
+	return 0;
+}
+
+
