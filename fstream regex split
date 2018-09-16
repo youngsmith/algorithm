@@ -63,6 +63,12 @@ int main(int argc, char **argv) {
 	cout << endl;
 
 	//정규식 사용법
+	// \w, \s는 먹히지 않음. \\w, \\s가 먹힘.
+	// * : 0번 이상, + : 1번 이상, ? : 0 또는 1
+	//regex reg("([\\w]+\\s)+"); // abc def yyjja999
+
+	//string s = "010 ab 4620";
+	//string s = "abc def yyjja999 @naver.com ABC123@gmail.com";
 	regex reg("(10|[0-9])[DST][*#]?");
 	smatch m;
 	string s = "10D*2T#3S";
